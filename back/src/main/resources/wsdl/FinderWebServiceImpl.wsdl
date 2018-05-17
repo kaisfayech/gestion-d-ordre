@@ -1,0 +1,1997 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.bsb.com/soliam/fo" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://www.bsb.com/sf/exceptions/1" name="FinderWebServiceService" targetNamespace="http://www.bsb.com/soliam/fo">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://model.view.external.extension.soliam.bsb.com" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://model.view.external.extension.soliam.bsb.com">
+<xsd:complexType name="ExternalViewNomenclature">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="externalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfExternalViewNomenclature">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="ExternalViewNomenclature" type="tns:ExternalViewNomenclature"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.bsb.com/sf/exceptions/1" xmlns:ns0="http://www.bsb.com/soliam/fo" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/sf/exceptions/1">
+<xsd:import namespace="http://www.bsb.com/soliam/fo"/>
+<xsd:complexType name="Exception">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="actionMessage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="business" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element minOccurs="0" name="descriptionMessage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="namedParameters" type="ns0:string2stringMap"/>
+<xsd:element minOccurs="0" name="recoverable" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="summaryMessage" type="xsd:string"/>
+<xsd:element minOccurs="0" name="timestamp" type="xsd:dateTime"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="SfExceptionDetail">
+<xsd:complexContent>
+<xsd:extension base="tns:Exception">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="contextualInformation" type="xsd:string"/>
+<xsd:element minOccurs="0" name="stackTrace" type="xsd:string"/>
+<xsd:element minOccurs="0" name="user" type="xsd:string"/>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="SfExceptionDetail" nillable="true" type="tns:SfExceptionDetail"/>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://security.core.fo.soliam.bsb.com" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://security.core.fo.soliam.bsb.com">
+<xsd:complexType name="AssetIdentifier">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="natureInternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="value" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfAssetIdentifier">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="AssetIdentifier" type="tns:AssetIdentifier"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://common.extension.soliam.bsb.com" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://common.extension.soliam.bsb.com">
+<xsd:simpleType name="ExternalViewFilterOperator">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="EQUALS"/>
+<xsd:enumeration value="DIFFERENT"/>
+<xsd:enumeration value="GREATER_THAN"/>
+<xsd:enumeration value="GREATER_OR_EQUAL"/>
+<xsd:enumeration value="LOWER_THAN"/>
+<xsd:enumeration value="LOWER_OR_EQUAL"/>
+<xsd:enumeration value="IN"/>
+<xsd:enumeration value="NOT_IN"/>
+<xsd:enumeration value="LIKE"/>
+<xsd:enumeration value="NOT_LIKE"/>
+<xsd:enumeration value="BETWEEN"/>
+<xsd:enumeration value="IN_LIKE"/>
+<xsd:enumeration value="NOT_IN_LIKE"/>
+<xsd:enumeration value="IS_NULL"/>
+<xsd:enumeration value="IS_NOT_NULL"/>
+<xsd:enumeration value="EQUALS_IGNORE_CASE"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="ExternalViewColumnTypeEnum">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="NUMBER"/>
+<xsd:enumeration value="STRING"/>
+<xsd:enumeration value="BOOLEAN"/>
+<xsd:enumeration value="DATE"/>
+<xsd:enumeration value="NOMENCLATURE"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.bsb.com/soliam/fo" xmlns:ns2="http://model.view.external.extension.soliam.bsb.com" xmlns:ns1="http://security.core.fo.soliam.bsb.com" xmlns:ns0="http://common.extension.soliam.bsb.com" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/fo">
+<xsd:import namespace="http://common.extension.soliam.bsb.com"/>
+<xsd:import namespace="http://security.core.fo.soliam.bsb.com"/>
+<xsd:import namespace="http://model.view.external.extension.soliam.bsb.com"/>
+<xsd:complexType name="string2stringMap">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="entry">
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="key" type="xsd:string"/>
+<xsd:element minOccurs="0" name="value" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfThirdParams">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="thirdParams" type="tns:thirdParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="UserParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="firstName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalIdentifier" type="xsd:string"/>
+<xsd:element minOccurs="0" name="language" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thirdType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="typeUser" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe7" type="xsd:string"/>
+<xsd:element minOccurs="0" name="userGroupe8" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfExternalViewNomenclatureFilter">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="externalViewNomenclatureFilter" type="tns:externalViewNomenclatureFilter"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="thirdParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="bank" type="xsd:string"/>
+<xsd:element minOccurs="0" name="client" type="xsd:string"/>
+<xsd:element minOccurs="0" name="counterpart" type="xsd:string"/>
+<xsd:element minOccurs="0" name="custodian" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entSeg" type="xsd:string"/>
+<xsd:element minOccurs="0" name="excludeAll" type="xsd:string"/>
+<xsd:element minOccurs="0" name="intermediary" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="issuer" type="xsd:string"/>
+<xsd:element minOccurs="0" name="mnemonic" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="notApplicant" type="xsd:string"/>
+<xsd:element minOccurs="0" name="notClient" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ptfNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="sector" type="xsd:string"/>
+<xsd:element minOccurs="0" name="type" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfContractParams">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="contractParams" type="tns:contractParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bankAccount">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element minOccurs="0" name="country" type="xsd:string"/>
+<xsd:element minOccurs="0" name="cpt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="currency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="isAllCurrency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="lib" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioInternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="tba" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thirdparty" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfString">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="string" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="User">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="firstName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalIdentifier" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="coreDate">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="dateStrFromDate" type="tns:date"/>
+<xsd:element minOccurs="0" name="dateString" type="xsd:string"/>
+<xsd:element minOccurs="0" name="queryString" type="xsd:string"/>
+<xsd:element minOccurs="0" name="sinceStartDate" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="externalViewNomenclatureFilter">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="columnExternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="columnType" type="ns0:ExternalViewColumnTypeEnum"/>
+<xsd:element minOccurs="0" name="operator" type="ns0:ExternalViewFilterOperator"/>
+<xsd:element minOccurs="0" name="values" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:simpleType name="Period">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="PERIOD_NONE"/>
+<xsd:enumeration value="PERIOD_DTD"/>
+<xsd:enumeration value="PERIOD_WTD"/>
+<xsd:enumeration value="PERIOD_MTD"/>
+<xsd:enumeration value="PERIOD_QTD"/>
+<xsd:enumeration value="PERIOD_YTD"/>
+<xsd:enumeration value="PERIOD_WOW"/>
+<xsd:enumeration value="PERIOD_MOM"/>
+<xsd:enumeration value="PERIOD_QOQ"/>
+<xsd:enumeration value="PERIOD_YOY"/>
+<xsd:enumeration value="PERIOD_DMX"/>
+<xsd:enumeration value="PERIOD_WMX"/>
+<xsd:enumeration value="PERIOD_MMX"/>
+<xsd:enumeration value="PERIOD_QMX"/>
+<xsd:enumeration value="PERIOD_YMX"/>
+<xsd:enumeration value="PERIOD_MTDMX"/>
+<xsd:enumeration value="PERIOD_YTDMX"/>
+<xsd:enumeration value="PERIOD_DAX"/>
+<xsd:enumeration value="PERIOD_YAX"/>
+<xsd:enumeration value="PERIOD_MAX"/>
+<xsd:enumeration value="PERIOD_QAX"/>
+<xsd:enumeration value="PERIOD_WAX"/>
+<xsd:enumeration value="PERIOD_M"/>
+<xsd:enumeration value="PERIOD_Y"/>
+<xsd:enumeration value="PERIOD_W"/>
+<xsd:enumeration value="PERIOD_CYTD"/>
+<xsd:enumeration value="PERIOD_VIEW"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:complexType name="third">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entSeg" type="xsd:string"/>
+<xsd:element minOccurs="0" name="mnemonic" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfPortfolioParams">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="portfolioParams" type="tns:portfolioParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfThird">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="third" type="tns:third"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfSecurity">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="security" type="tns:security"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="date">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="dateString" type="xsd:string"/>
+<xsd:element minOccurs="0" name="delta" type="xsd:int"/>
+<xsd:element minOccurs="0" name="endDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="range" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="refDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="startDate" type="xsd:string"/>
+<xsd:element minOccurs="0" name="stdPeriod" type="tns:Period"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="security">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="accountingMode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="assetIdentifers" type="ns1:ArrayOfAssetIdentifier"/>
+<xsd:element minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element minOccurs="0" name="identifier" type="xsd:string"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="nature" type="xsd:string"/>
+<xsd:element minOccurs="0" name="natureInternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="principalNature" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="quotationCurrency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="quotationMode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="shortLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="typeId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="unitaryNominal" type="xsd:decimal"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="portfolio">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="accountClass" type="xsd:string"/>
+<xsd:element minOccurs="0" name="accountEntity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="accountLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="accountNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element minOccurs="0" name="originPortfolio" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfContract">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="contract" type="tns:contract"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="contract">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="code" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractClass" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="currencyCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolio" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfUser">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="User" type="tns:User"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ribAdress">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="accountNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccountLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="beneficiaryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="beneficiaryReference" type="xsd:string"/>
+<xsd:element minOccurs="0" name="currency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thirdPartyHolder" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="massorderwizard">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="archived" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="consolidationEntityMode" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="createDate" type="tns:coreDate"/>
+<xsd:element minOccurs="0" name="createDateStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="expiryDate" type="tns:coreDate"/>
+<xsd:element minOccurs="0" name="expiryDateStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="libStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="libType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="mowId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="priority" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recComment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recDate" type="tns:coreDate"/>
+<xsd:element minOccurs="0" name="recDateStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="receivingResponseDeadline" type="tns:coreDate"/>
+<xsd:element minOccurs="0" name="receivingResponseDeadlineStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recommendationStatus" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recommendationType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recordingResponseDeadline" type="tns:coreDate"/>
+<xsd:element minOccurs="0" name="recordingResponseDeadlineStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="status" type="xsd:string"/>
+<xsd:element minOccurs="0" name="type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="updateDate" type="tns:coreDate"/>
+<xsd:element minOccurs="0" name="updateDateStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="user" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wizardId" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfConsolidationEntityDO">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="ConsolidationEntityDO" type="tns:ConsolidationEntityDO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="bankAccountParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="allCurrency" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="bankTransfer" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="bankTransferType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="beneficiaryBankAccount" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="country" type="xsd:string"/>
+<xsd:element minOccurs="0" name="cpt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="currency" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="exceptBanksAccount" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="ignorePortfolios" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="internalBankAccountPtfAccess" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="originalBankAccount" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="portfolio" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioInternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="ptfNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="tctTctParamProfil" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="thirdCustodian" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thirdHolder" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="externalViewNomenclatureParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="columnExternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="externalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="externalViewExternalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="externalViewNomenclatureFilters" type="tns:ArrayOfExternalViewNomenclatureFilter"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="contractParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="bankAccount" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccountThirdParty" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractClass" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractId" type="xsd:string"/>
+<xsd:element minOccurs="0" name="contractType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolio" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="consolidationEntityParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="entity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="parentEntity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="parentEntityType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioTree" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="tieTree" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="type" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfMassorderwizard">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="massorderwizard" type="tns:massorderwizard"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="massorderWizardParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="archived" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="comment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="consolidationEntityMode" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="createDate" type="tns:date"/>
+<xsd:element minOccurs="0" name="expiryDate" type="tns:date"/>
+<xsd:element minOccurs="0" name="expiryDateStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="listCustomerId" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="owner" type="xsd:string"/>
+<xsd:element minOccurs="0" name="priority" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="recComment" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recDate" type="tns:date"/>
+<xsd:element minOccurs="0" name="recDateStr" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="recommendationStatuses" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="recommendationTypes" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="status" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="types" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="updateDate" type="tns:date"/>
+<xsd:element minOccurs="0" name="wizardIdFrom" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wizardIdTo" type="xsd:string"/>
+<xsd:element minOccurs="0" name="wizardIds" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="wizardType" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfBankAccount">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="bankAccount" type="tns:bankAccount"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfRibAdress">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="ribAdress" type="tns:ribAdress"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfPortfolio">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="portfolio" type="tns:portfolio"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ConsolidationEntityDO">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="parentEntity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="parentEntityID" type="xsd:string"/>
+<xsd:element minOccurs="0" name="parentEntityType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioAssociationTree" type="xsd:string"/>
+<xsd:element minOccurs="0" name="type" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ribAdressParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="accountNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="adrTie" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankAccountLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="bankName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="beneficiaryName" type="xsd:string"/>
+<xsd:element minOccurs="0" name="beneficiaryReference" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="name" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioNumber" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="portfolioParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="accountClass" type="xsd:string"/>
+<xsd:element minOccurs="0" name="accountNumber" type="xsd:string"/>
+<xsd:element minOccurs="0" name="accountSubClass" type="xsd:string"/>
+<xsd:element minOccurs="0" name="custodian" type="xsd:string"/>
+<xsd:element minOccurs="0" name="entity" type="xsd:string"/>
+<xsd:element minOccurs="0" name="fromBankTransfer" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="investmentPoduct" type="xsd:string"/>
+<xsd:element minOccurs="0" name="investmentType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="managementMode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="multiPtf" type="xsd:string"/>
+<xsd:element minOccurs="0" name="originPortfolio" type="xsd:string"/>
+<xsd:element minOccurs="0" name="portfolioNumbers" type="tns:ArrayOfString"/>
+<xsd:element minOccurs="0" name="ptf" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc7" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rc8" type="xsd:string"/>
+<xsd:element minOccurs="0" name="specialAccessRights" type="xsd:string"/>
+<xsd:element minOccurs="0" name="tcdpt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thirdHolder" type="xsd:string"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="securityParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="activateSecuritySegregation" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="allNie" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="classValue" type="xsd:string"/>
+<xsd:element minOccurs="0" name="excludeArchived" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="identifier" type="xsd:string"/>
+<xsd:element minOccurs="0" name="internalCode" type="xsd:string"/>
+<xsd:element minOccurs="0" name="label" type="xsd:string"/>
+<xsd:element minOccurs="0" name="limitToOneResult" type="xsd:boolean"/>
+<xsd:element minOccurs="0" name="listCodeExt" type="xsd:string"/>
+<xsd:element minOccurs="0" name="nature" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv1" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv2" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv3" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv4" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv5" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv6" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv7" type="xsd:string"/>
+<xsd:element minOccurs="0" name="rv8" type="xsd:string"/>
+<xsd:element minOccurs="0" name="shortLabel" type="xsd:string"/>
+<xsd:element minOccurs="0" name="subType" type="xsd:string"/>
+<xsd:element minOccurs="0" name="thirdPartyIssuer" type="xsd:string"/>
+<xsd:element minOccurs="0" name="type" type="xsd:string"/>
+<xsd:element minOccurs="0" name="withValNie" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ArrayOfSecurityParams">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="securityParams" type="tns:securityParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getUsers" type="tns:getUsers"/>
+<xsd:complexType name="getUsers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="usersParams" type="tns:UserParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getUsersResponse" type="tns:getUsersResponse"/>
+<xsd:complexType name="getUsersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfUser"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getFilteredNomenclatureValues" type="tns:getFilteredNomenclatureValues"/>
+<xsd:complexType name="getFilteredNomenclatureValues">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="externalViewNomenclatureParams" type="tns:externalViewNomenclatureParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getFilteredNomenclatureValuesResponse" type="tns:getFilteredNomenclatureValuesResponse"/>
+<xsd:complexType name="getFilteredNomenclatureValuesResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="ns2:ArrayOfExternalViewNomenclature"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getPortfolios" type="tns:getPortfolios"/>
+<xsd:complexType name="getPortfolios">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsPortfolioParams" type="tns:portfolioParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getPortfoliosResponse" type="tns:getPortfoliosResponse"/>
+<xsd:complexType name="getPortfoliosResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfPortfolio"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listPortfolioNumbers" type="tns:listPortfolioNumbers"/>
+<xsd:complexType name="listPortfolioNumbers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listPortfolioNumbersResponse" type="tns:listPortfolioNumbersResponse"/>
+<xsd:complexType name="listPortfolioNumbersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listBankAccountNumbers" type="tns:listBankAccountNumbers"/>
+<xsd:complexType name="listBankAccountNumbers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="bankParams" type="tns:bankAccountParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listBankAccountNumbersResponse" type="tns:listBankAccountNumbersResponse"/>
+<xsd:complexType name="listBankAccountNumbersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getSecurities" type="tns:getSecurities"/>
+<xsd:complexType name="getSecurities">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsSecurityParams" type="tns:securityParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getSecuritiesResponse" type="tns:getSecuritiesResponse"/>
+<xsd:complexType name="getSecuritiesResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfSecurity"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getPortfoliosFromMultipleParams" type="tns:getPortfoliosFromMultipleParams"/>
+<xsd:complexType name="getPortfoliosFromMultipleParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsCollectionPortfolioParams" type="tns:ArrayOfPortfolioParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getPortfoliosFromMultipleParamsResponse" type="tns:getPortfoliosFromMultipleParamsResponse"/>
+<xsd:complexType name="getPortfoliosFromMultipleParamsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfPortfolio"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getRibAdress" type="tns:getRibAdress"/>
+<xsd:complexType name="getRibAdress">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="ribAdressParams" type="tns:ribAdressParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getRibAdressResponse" type="tns:getRibAdressResponse"/>
+<xsd:complexType name="getRibAdressResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfRibAdress"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getBankAccounts" type="tns:getBankAccounts"/>
+<xsd:complexType name="getBankAccounts">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsBankAccountParams" type="tns:bankAccountParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getBankAccountsResponse" type="tns:getBankAccountsResponse"/>
+<xsd:complexType name="getBankAccountsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfBankAccount"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getContracts" type="tns:getContracts"/>
+<xsd:complexType name="getContracts">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsContractParams" type="tns:contractParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getContractsResponse" type="tns:getContractsResponse"/>
+<xsd:complexType name="getContractsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfContract"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listContractsByCriteria" type="tns:listContractsByCriteria"/>
+<xsd:complexType name="listContractsByCriteria">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="contractCriteria" type="tns:contractParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listContractsByCriteriaResponse" type="tns:listContractsByCriteriaResponse"/>
+<xsd:complexType name="listContractsByCriteriaResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listUsers" type="tns:listUsers"/>
+<xsd:complexType name="listUsers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="arg0" type="xsd:string"/>
+<xsd:element name="arg1" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listUsersResponse" type="tns:listUsersResponse"/>
+<xsd:complexType name="listUsersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityIdentifiers_benchmrk" type="tns:listSecurityIdentifiers_benchmrk"/>
+<xsd:complexType name="listSecurityIdentifiers_benchmrk">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityIdentifiers_benchmrkResponse" type="tns:listSecurityIdentifiers_benchmrkResponse"/>
+<xsd:complexType name="listSecurityIdentifiers_benchmrkResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getOneSecurity" type="tns:getOneSecurity"/>
+<xsd:complexType name="getOneSecurity">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsSecurityParams" type="tns:securityParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getOneSecurityResponse" type="tns:getOneSecurityResponse"/>
+<xsd:complexType name="getOneSecurityResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfSecurity"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getThirds" type="tns:getThirds"/>
+<xsd:complexType name="getThirds">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsThirdParams" type="tns:thirdParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getThirdsResponse" type="tns:getThirdsResponse"/>
+<xsd:complexType name="getThirdsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfThird"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityIdentifiers" type="tns:listSecurityIdentifiers"/>
+<xsd:complexType name="listSecurityIdentifiers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityIdentifiersResponse" type="tns:listSecurityIdentifiersResponse"/>
+<xsd:complexType name="listSecurityIdentifiersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listRecommendations" type="tns:listRecommendations"/>
+<xsd:complexType name="listRecommendations">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listRecommendationsResponse" type="tns:listRecommendationsResponse"/>
+<xsd:complexType name="listRecommendationsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getConsolidationEntity" type="tns:getConsolidationEntity"/>
+<xsd:complexType name="getConsolidationEntity">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="consolidationEntityParams" type="tns:consolidationEntityParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getConsolidationEntityResponse" type="tns:getConsolidationEntityResponse"/>
+<xsd:complexType name="getConsolidationEntityResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfConsolidationEntityDO"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getThirdsFromMultipleParams" type="tns:getThirdsFromMultipleParams"/>
+<xsd:complexType name="getThirdsFromMultipleParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsCollectionThirdParams" type="tns:ArrayOfThirdParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getThirdsFromMultipleParamsResponse" type="tns:getThirdsFromMultipleParamsResponse"/>
+<xsd:complexType name="getThirdsFromMultipleParamsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfThird"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listContractReferences" type="tns:listContractReferences"/>
+<xsd:complexType name="listContractReferences">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listContractReferencesResponse" type="tns:listContractReferencesResponse"/>
+<xsd:complexType name="listContractReferencesResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityShortLabel_benchmrk" type="tns:listSecurityShortLabel_benchmrk"/>
+<xsd:complexType name="listSecurityShortLabel_benchmrk">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityShortLabel_benchmrkResponse" type="tns:listSecurityShortLabel_benchmrkResponse"/>
+<xsd:complexType name="listSecurityShortLabel_benchmrkResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getMassorderWizards" type="tns:getMassorderWizards"/>
+<xsd:complexType name="getMassorderWizards">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsMassorderWizardParams" type="tns:massorderWizardParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getMassorderWizardsResponse" type="tns:getMassorderWizardsResponse"/>
+<xsd:complexType name="getMassorderWizardsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfMassorderwizard"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listThirdPartyMnemonics" type="tns:listThirdPartyMnemonics"/>
+<xsd:complexType name="listThirdPartyMnemonics">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="criteriaModelThirdParams" type="tns:thirdParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listThirdPartyMnemonicsResponse" type="tns:listThirdPartyMnemonicsResponse"/>
+<xsd:complexType name="listThirdPartyMnemonicsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listMirrorAccountWithEntity" type="tns:listMirrorAccountWithEntity"/>
+<xsd:complexType name="listMirrorAccountWithEntity">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="searchCriteriaPortfolioParams" type="tns:portfolioParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listMirrorAccountWithEntityResponse" type="tns:listMirrorAccountWithEntityResponse"/>
+<xsd:complexType name="listMirrorAccountWithEntityResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityShortLabel" type="tns:listSecurityShortLabel"/>
+<xsd:complexType name="listSecurityShortLabel">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listSecurityShortLabelResponse" type="tns:listSecurityShortLabelResponse"/>
+<xsd:complexType name="listSecurityShortLabelResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listRibNumbers" type="tns:listRibNumbers"/>
+<xsd:complexType name="listRibNumbers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="ribAddressParams" type="tns:ribAdressParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listRibNumbersResponse" type="tns:listRibNumbersResponse"/>
+<xsd:complexType name="listRibNumbersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listConsolidationEntity" type="tns:listConsolidationEntity"/>
+<xsd:complexType name="listConsolidationEntity">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listConsolidationEntityResponse" type="tns:listConsolidationEntityResponse"/>
+<xsd:complexType name="listConsolidationEntityResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getFilteredNomenclatureValuesByLabel" type="tns:getFilteredNomenclatureValuesByLabel"/>
+<xsd:complexType name="getFilteredNomenclatureValuesByLabel">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="externalViewNomenclatureParams" type="tns:externalViewNomenclatureParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getFilteredNomenclatureValuesByLabelResponse" type="tns:getFilteredNomenclatureValuesByLabelResponse"/>
+<xsd:complexType name="getFilteredNomenclatureValuesByLabelResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="ns2:ArrayOfExternalViewNomenclature"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listMultiPortfolioNumbers" type="tns:listMultiPortfolioNumbers"/>
+<xsd:complexType name="listMultiPortfolioNumbers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listMultiPortfolioNumbersResponse" type="tns:listMultiPortfolioNumbersResponse"/>
+<xsd:complexType name="listMultiPortfolioNumbersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listPortfolioNumbersWithParams" type="tns:listPortfolioNumbersWithParams"/>
+<xsd:complexType name="listPortfolioNumbersWithParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="portfolioParams" type="tns:portfolioParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listPortfolioNumbersWithParamsResponse" type="tns:listPortfolioNumbersWithParamsResponse"/>
+<xsd:complexType name="listPortfolioNumbersWithParamsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listMirrorAccountNumbers" type="tns:listMirrorAccountNumbers"/>
+<xsd:complexType name="listMirrorAccountNumbers">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="listMirrorAccountNumbersResponse" type="tns:listMirrorAccountNumbersResponse"/>
+<xsd:complexType name="listMirrorAccountNumbersResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfString"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getFilteredNomenclatureValuesByExternalCode" type="tns:getFilteredNomenclatureValuesByExternalCode"/>
+<xsd:complexType name="getFilteredNomenclatureValuesByExternalCode">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="prefix" type="xsd:string"/>
+<xsd:element name="maxResults" type="xsd:int"/>
+<xsd:element minOccurs="0" name="externalViewNomenclatureParams" type="tns:externalViewNomenclatureParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getFilteredNomenclatureValuesByExternalCodeResponse" type="tns:getFilteredNomenclatureValuesByExternalCodeResponse"/>
+<xsd:complexType name="getFilteredNomenclatureValuesByExternalCodeResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="ns2:ArrayOfExternalViewNomenclature"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getContractsFromMultipleParams" type="tns:getContractsFromMultipleParams"/>
+<xsd:complexType name="getContractsFromMultipleParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsCollectionContractParams" type="tns:ArrayOfContractParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getContractsFromMultipleParamsResponse" type="tns:getContractsFromMultipleParamsResponse"/>
+<xsd:complexType name="getContractsFromMultipleParamsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfContract"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getSecuritiesFromMultipleParams" type="tns:getSecuritiesFromMultipleParams"/>
+<xsd:complexType name="getSecuritiesFromMultipleParams">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsCollectionSecurityParams" type="tns:ArrayOfSecurityParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getSecuritiesFromMultipleParamsResponse" type="tns:getSecuritiesFromMultipleParamsResponse"/>
+<xsd:complexType name="getSecuritiesFromMultipleParamsResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:ArrayOfSecurity"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getSecurityDO" type="tns:getSecurityDO"/>
+<xsd:complexType name="getSecurityDO">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="searchParamsSecurityParams" type="tns:securityParams"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:element name="getSecurityDOResponse" type="tns:getSecurityDOResponse"/>
+<xsd:complexType name="getSecurityDOResponse">
+<xsd:sequence>
+<xsd:element minOccurs="0" name="return" type="tns:security"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="listContractReferencesResponse">
+    <wsdl:part element="tns:listContractReferencesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listRibNumbers">
+    <wsdl:part element="tns:listRibNumbers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listConsolidationEntityResponse">
+    <wsdl:part element="tns:listConsolidationEntityResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSecurityDOResponse">
+    <wsdl:part element="tns:getSecurityDOResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityIdentifiers">
+    <wsdl:part element="tns:listSecurityIdentifiers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listMirrorAccountWithEntityResponse">
+    <wsdl:part element="tns:listMirrorAccountWithEntityResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listMirrorAccountNumbersResponse">
+    <wsdl:part element="tns:listMirrorAccountNumbersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPortfoliosFromMultipleParamsResponse">
+    <wsdl:part element="tns:getPortfoliosFromMultipleParamsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getContractsResponse">
+    <wsdl:part element="tns:getContractsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getFilteredNomenclatureValuesResponse">
+    <wsdl:part element="tns:getFilteredNomenclatureValuesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listPortfolioNumbersWithParams">
+    <wsdl:part element="tns:listPortfolioNumbersWithParams" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPortfolios">
+    <wsdl:part element="tns:getPortfolios" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityIdentifiers_benchmrkResponse">
+    <wsdl:part element="tns:listSecurityIdentifiers_benchmrkResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityShortLabel_benchmrkResponse">
+    <wsdl:part element="tns:listSecurityShortLabel_benchmrkResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getFilteredNomenclatureValues">
+    <wsdl:part element="tns:getFilteredNomenclatureValues" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPortfoliosResponse">
+    <wsdl:part element="tns:getPortfoliosResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityShortLabel_benchmrk">
+    <wsdl:part element="tns:listSecurityShortLabel_benchmrk" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getFilteredNomenclatureValuesByLabelResponse">
+    <wsdl:part element="tns:getFilteredNomenclatureValuesByLabelResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="WebServiceException">
+    <wsdl:part element="ns1:SfExceptionDetail" name="WebServiceException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listMirrorAccountNumbers">
+    <wsdl:part element="tns:listMirrorAccountNumbers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listMultiPortfolioNumbersResponse">
+    <wsdl:part element="tns:listMultiPortfolioNumbersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSecuritiesFromMultipleParamsResponse">
+    <wsdl:part element="tns:getSecuritiesFromMultipleParamsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOneSecurity">
+    <wsdl:part element="tns:getOneSecurity" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRibAdress">
+    <wsdl:part element="tns:getRibAdress" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getFilteredNomenclatureValuesByLabel">
+    <wsdl:part element="tns:getFilteredNomenclatureValuesByLabel" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getThirdsResponse">
+    <wsdl:part element="tns:getThirdsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listRibNumbersResponse">
+    <wsdl:part element="tns:listRibNumbersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listContractsByCriteria">
+    <wsdl:part element="tns:listContractsByCriteria" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getConsolidationEntityResponse">
+    <wsdl:part element="tns:getConsolidationEntityResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listContractsByCriteriaResponse">
+    <wsdl:part element="tns:listContractsByCriteriaResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listThirdPartyMnemonics">
+    <wsdl:part element="tns:listThirdPartyMnemonics" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBankAccounts">
+    <wsdl:part element="tns:getBankAccounts" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listRecommendationsResponse">
+    <wsdl:part element="tns:listRecommendationsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getContractsFromMultipleParamsResponse">
+    <wsdl:part element="tns:getContractsFromMultipleParamsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listBankAccountNumbersResponse">
+    <wsdl:part element="tns:listBankAccountNumbersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listContractReferences">
+    <wsdl:part element="tns:listContractReferences" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getFilteredNomenclatureValuesByExternalCodeResponse">
+    <wsdl:part element="tns:getFilteredNomenclatureValuesByExternalCodeResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listPortfolioNumbersWithParamsResponse">
+    <wsdl:part element="tns:listPortfolioNumbersWithParamsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBankAccountsResponse">
+    <wsdl:part element="tns:getBankAccountsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listBankAccountNumbers">
+    <wsdl:part element="tns:listBankAccountNumbers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listConsolidationEntity">
+    <wsdl:part element="tns:listConsolidationEntity" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getConsolidationEntity">
+    <wsdl:part element="tns:getConsolidationEntity" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityShortLabel">
+    <wsdl:part element="tns:listSecurityShortLabel" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRibAdressResponse">
+    <wsdl:part element="tns:getRibAdressResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPortfoliosFromMultipleParams">
+    <wsdl:part element="tns:getPortfoliosFromMultipleParams" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getThirds">
+    <wsdl:part element="tns:getThirds" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getContracts">
+    <wsdl:part element="tns:getContracts" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSecuritiesFromMultipleParams">
+    <wsdl:part element="tns:getSecuritiesFromMultipleParams" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listPortfolioNumbers">
+    <wsdl:part element="tns:listPortfolioNumbers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listMultiPortfolioNumbers">
+    <wsdl:part element="tns:listMultiPortfolioNumbers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getUsersResponse">
+    <wsdl:part element="tns:getUsersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listThirdPartyMnemonicsResponse">
+    <wsdl:part element="tns:listThirdPartyMnemonicsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSecurityDO">
+    <wsdl:part element="tns:getSecurityDO" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSecurities">
+    <wsdl:part element="tns:getSecurities" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getThirdsFromMultipleParamsResponse">
+    <wsdl:part element="tns:getThirdsFromMultipleParamsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getUsers">
+    <wsdl:part element="tns:getUsers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listRecommendations">
+    <wsdl:part element="tns:listRecommendations" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getContractsFromMultipleParams">
+    <wsdl:part element="tns:getContractsFromMultipleParams" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMassorderWizardsResponse">
+    <wsdl:part element="tns:getMassorderWizardsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getThirdsFromMultipleParams">
+    <wsdl:part element="tns:getThirdsFromMultipleParams" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listUsers">
+    <wsdl:part element="tns:listUsers" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getSecuritiesResponse">
+    <wsdl:part element="tns:getSecuritiesResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listUsersResponse">
+    <wsdl:part element="tns:listUsersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityShortLabelResponse">
+    <wsdl:part element="tns:listSecurityShortLabelResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getFilteredNomenclatureValuesByExternalCode">
+    <wsdl:part element="tns:getFilteredNomenclatureValuesByExternalCode" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listPortfolioNumbersResponse">
+    <wsdl:part element="tns:listPortfolioNumbersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityIdentifiers_benchmrk">
+    <wsdl:part element="tns:listSecurityIdentifiers_benchmrk" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listSecurityIdentifiersResponse">
+    <wsdl:part element="tns:listSecurityIdentifiersResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOneSecurityResponse">
+    <wsdl:part element="tns:getOneSecurityResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getMassorderWizards">
+    <wsdl:part element="tns:getMassorderWizards" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="listMirrorAccountWithEntity">
+    <wsdl:part element="tns:listMirrorAccountWithEntity" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="FinderService">
+    <wsdl:operation name="getUsers">
+      <wsdl:input message="tns:getUsers" name="getUsers">
+    </wsdl:input>
+      <wsdl:output message="tns:getUsersResponse" name="getUsersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFilteredNomenclatureValues">
+      <wsdl:input message="tns:getFilteredNomenclatureValues" name="getFilteredNomenclatureValues">
+    </wsdl:input>
+      <wsdl:output message="tns:getFilteredNomenclatureValuesResponse" name="getFilteredNomenclatureValuesResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortfolios">
+      <wsdl:input message="tns:getPortfolios" name="getPortfolios">
+    </wsdl:input>
+      <wsdl:output message="tns:getPortfoliosResponse" name="getPortfoliosResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listPortfolioNumbers">
+      <wsdl:input message="tns:listPortfolioNumbers" name="listPortfolioNumbers">
+    </wsdl:input>
+      <wsdl:output message="tns:listPortfolioNumbersResponse" name="listPortfolioNumbersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listBankAccountNumbers">
+      <wsdl:input message="tns:listBankAccountNumbers" name="listBankAccountNumbers">
+    </wsdl:input>
+      <wsdl:output message="tns:listBankAccountNumbersResponse" name="listBankAccountNumbersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSecurities">
+      <wsdl:input message="tns:getSecurities" name="getSecurities">
+    </wsdl:input>
+      <wsdl:output message="tns:getSecuritiesResponse" name="getSecuritiesResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortfoliosFromMultipleParams">
+      <wsdl:input message="tns:getPortfoliosFromMultipleParams" name="getPortfoliosFromMultipleParams">
+    </wsdl:input>
+      <wsdl:output message="tns:getPortfoliosFromMultipleParamsResponse" name="getPortfoliosFromMultipleParamsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRibAdress">
+      <wsdl:input message="tns:getRibAdress" name="getRibAdress">
+    </wsdl:input>
+      <wsdl:output message="tns:getRibAdressResponse" name="getRibAdressResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getBankAccounts">
+      <wsdl:input message="tns:getBankAccounts" name="getBankAccounts">
+    </wsdl:input>
+      <wsdl:output message="tns:getBankAccountsResponse" name="getBankAccountsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getContracts">
+      <wsdl:input message="tns:getContracts" name="getContracts">
+    </wsdl:input>
+      <wsdl:output message="tns:getContractsResponse" name="getContractsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listContractsByCriteria">
+      <wsdl:input message="tns:listContractsByCriteria" name="listContractsByCriteria">
+    </wsdl:input>
+      <wsdl:output message="tns:listContractsByCriteriaResponse" name="listContractsByCriteriaResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listUsers">
+      <wsdl:input message="tns:listUsers" name="listUsers">
+    </wsdl:input>
+      <wsdl:output message="tns:listUsersResponse" name="listUsersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityIdentifiers_benchmrk">
+      <wsdl:input message="tns:listSecurityIdentifiers_benchmrk" name="listSecurityIdentifiers_benchmrk">
+    </wsdl:input>
+      <wsdl:output message="tns:listSecurityIdentifiers_benchmrkResponse" name="listSecurityIdentifiers_benchmrkResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getOneSecurity">
+      <wsdl:input message="tns:getOneSecurity" name="getOneSecurity">
+    </wsdl:input>
+      <wsdl:output message="tns:getOneSecurityResponse" name="getOneSecurityResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getThirds">
+      <wsdl:input message="tns:getThirds" name="getThirds">
+    </wsdl:input>
+      <wsdl:output message="tns:getThirdsResponse" name="getThirdsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityIdentifiers">
+      <wsdl:input message="tns:listSecurityIdentifiers" name="listSecurityIdentifiers">
+    </wsdl:input>
+      <wsdl:output message="tns:listSecurityIdentifiersResponse" name="listSecurityIdentifiersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listRecommendations">
+      <wsdl:input message="tns:listRecommendations" name="listRecommendations">
+    </wsdl:input>
+      <wsdl:output message="tns:listRecommendationsResponse" name="listRecommendationsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getConsolidationEntity">
+      <wsdl:input message="tns:getConsolidationEntity" name="getConsolidationEntity">
+    </wsdl:input>
+      <wsdl:output message="tns:getConsolidationEntityResponse" name="getConsolidationEntityResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getThirdsFromMultipleParams">
+      <wsdl:input message="tns:getThirdsFromMultipleParams" name="getThirdsFromMultipleParams">
+    </wsdl:input>
+      <wsdl:output message="tns:getThirdsFromMultipleParamsResponse" name="getThirdsFromMultipleParamsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listContractReferences">
+      <wsdl:input message="tns:listContractReferences" name="listContractReferences">
+    </wsdl:input>
+      <wsdl:output message="tns:listContractReferencesResponse" name="listContractReferencesResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityShortLabel_benchmrk">
+      <wsdl:input message="tns:listSecurityShortLabel_benchmrk" name="listSecurityShortLabel_benchmrk">
+    </wsdl:input>
+      <wsdl:output message="tns:listSecurityShortLabel_benchmrkResponse" name="listSecurityShortLabel_benchmrkResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMassorderWizards">
+      <wsdl:input message="tns:getMassorderWizards" name="getMassorderWizards">
+    </wsdl:input>
+      <wsdl:output message="tns:getMassorderWizardsResponse" name="getMassorderWizardsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listThirdPartyMnemonics">
+      <wsdl:input message="tns:listThirdPartyMnemonics" name="listThirdPartyMnemonics">
+    </wsdl:input>
+      <wsdl:output message="tns:listThirdPartyMnemonicsResponse" name="listThirdPartyMnemonicsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listMirrorAccountWithEntity">
+      <wsdl:input message="tns:listMirrorAccountWithEntity" name="listMirrorAccountWithEntity">
+    </wsdl:input>
+      <wsdl:output message="tns:listMirrorAccountWithEntityResponse" name="listMirrorAccountWithEntityResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityShortLabel">
+      <wsdl:input message="tns:listSecurityShortLabel" name="listSecurityShortLabel">
+    </wsdl:input>
+      <wsdl:output message="tns:listSecurityShortLabelResponse" name="listSecurityShortLabelResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listRibNumbers">
+      <wsdl:input message="tns:listRibNumbers" name="listRibNumbers">
+    </wsdl:input>
+      <wsdl:output message="tns:listRibNumbersResponse" name="listRibNumbersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listConsolidationEntity">
+      <wsdl:input message="tns:listConsolidationEntity" name="listConsolidationEntity">
+    </wsdl:input>
+      <wsdl:output message="tns:listConsolidationEntityResponse" name="listConsolidationEntityResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFilteredNomenclatureValuesByLabel">
+      <wsdl:input message="tns:getFilteredNomenclatureValuesByLabel" name="getFilteredNomenclatureValuesByLabel">
+    </wsdl:input>
+      <wsdl:output message="tns:getFilteredNomenclatureValuesByLabelResponse" name="getFilteredNomenclatureValuesByLabelResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listMultiPortfolioNumbers">
+      <wsdl:input message="tns:listMultiPortfolioNumbers" name="listMultiPortfolioNumbers">
+    </wsdl:input>
+      <wsdl:output message="tns:listMultiPortfolioNumbersResponse" name="listMultiPortfolioNumbersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listPortfolioNumbersWithParams">
+      <wsdl:input message="tns:listPortfolioNumbersWithParams" name="listPortfolioNumbersWithParams">
+    </wsdl:input>
+      <wsdl:output message="tns:listPortfolioNumbersWithParamsResponse" name="listPortfolioNumbersWithParamsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listMirrorAccountNumbers">
+      <wsdl:input message="tns:listMirrorAccountNumbers" name="listMirrorAccountNumbers">
+    </wsdl:input>
+      <wsdl:output message="tns:listMirrorAccountNumbersResponse" name="listMirrorAccountNumbersResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFilteredNomenclatureValuesByExternalCode">
+      <wsdl:input message="tns:getFilteredNomenclatureValuesByExternalCode" name="getFilteredNomenclatureValuesByExternalCode">
+    </wsdl:input>
+      <wsdl:output message="tns:getFilteredNomenclatureValuesByExternalCodeResponse" name="getFilteredNomenclatureValuesByExternalCodeResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getContractsFromMultipleParams">
+      <wsdl:input message="tns:getContractsFromMultipleParams" name="getContractsFromMultipleParams">
+    </wsdl:input>
+      <wsdl:output message="tns:getContractsFromMultipleParamsResponse" name="getContractsFromMultipleParamsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSecuritiesFromMultipleParams">
+      <wsdl:input message="tns:getSecuritiesFromMultipleParams" name="getSecuritiesFromMultipleParams">
+    </wsdl:input>
+      <wsdl:output message="tns:getSecuritiesFromMultipleParamsResponse" name="getSecuritiesFromMultipleParamsResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSecurityDO">
+      <wsdl:input message="tns:getSecurityDO" name="getSecurityDO">
+    </wsdl:input>
+      <wsdl:output message="tns:getSecurityDOResponse" name="getSecurityDOResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:WebServiceException" name="WebServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="FinderWebServiceServiceSoapBinding" type="tns:FinderService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getUsers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getUsers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getUsersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFilteredNomenclatureValues">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getFilteredNomenclatureValues">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getFilteredNomenclatureValuesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortfolios">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getPortfolios">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getPortfoliosResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listPortfolioNumbers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listPortfolioNumbers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listPortfolioNumbersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSecurities">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSecurities">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSecuritiesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listBankAccountNumbers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listBankAccountNumbers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listBankAccountNumbersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPortfoliosFromMultipleParams">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getPortfoliosFromMultipleParams">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getPortfoliosFromMultipleParamsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getBankAccounts">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getBankAccounts">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBankAccountsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getRibAdress">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getRibAdress">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getRibAdressResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getContracts">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getContracts">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getContractsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listContractsByCriteria">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listContractsByCriteria">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listContractsByCriteriaResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listUsers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listUsers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listUsersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getOneSecurity">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getOneSecurity">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getOneSecurityResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityIdentifiers_benchmrk">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listSecurityIdentifiers_benchmrk">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listSecurityIdentifiers_benchmrkResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getThirds">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getThirds">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getThirdsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityIdentifiers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listSecurityIdentifiers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listSecurityIdentifiersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listRecommendations">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listRecommendations">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listRecommendationsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getConsolidationEntity">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getConsolidationEntity">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getConsolidationEntityResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getThirdsFromMultipleParams">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getThirdsFromMultipleParams">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getThirdsFromMultipleParamsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listContractReferences">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listContractReferences">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listContractReferencesResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityShortLabel_benchmrk">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listSecurityShortLabel_benchmrk">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listSecurityShortLabel_benchmrkResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMassorderWizards">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getMassorderWizards">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getMassorderWizardsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listThirdPartyMnemonics">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listThirdPartyMnemonics">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listThirdPartyMnemonicsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listMirrorAccountWithEntity">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listMirrorAccountWithEntity">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listMirrorAccountWithEntityResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listRibNumbers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listRibNumbers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listRibNumbersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listSecurityShortLabel">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listSecurityShortLabel">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listSecurityShortLabelResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFilteredNomenclatureValuesByLabel">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getFilteredNomenclatureValuesByLabel">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getFilteredNomenclatureValuesByLabelResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listConsolidationEntity">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listConsolidationEntity">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listConsolidationEntityResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listMultiPortfolioNumbers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listMultiPortfolioNumbers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listMultiPortfolioNumbersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listPortfolioNumbersWithParams">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listPortfolioNumbersWithParams">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listPortfolioNumbersWithParamsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getFilteredNomenclatureValuesByExternalCode">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getFilteredNomenclatureValuesByExternalCode">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getFilteredNomenclatureValuesByExternalCodeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="listMirrorAccountNumbers">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="listMirrorAccountNumbers">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="listMirrorAccountNumbersResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getContractsFromMultipleParams">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getContractsFromMultipleParams">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getContractsFromMultipleParamsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSecuritiesFromMultipleParams">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSecuritiesFromMultipleParams">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSecuritiesFromMultipleParamsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getSecurityDO">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getSecurityDO">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getSecurityDOResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="WebServiceException">
+        <soap:fault name="WebServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FinderWebServiceService">
+    <wsdl:port binding="tns:FinderWebServiceServiceSoapBinding" name="FinderServicePort">
+      <soap:address location="http://tun40.bsbcorp.bsb.com:55080/tms/services/FinderWebServiceImpl"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

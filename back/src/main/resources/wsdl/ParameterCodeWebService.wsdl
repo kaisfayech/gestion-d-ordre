@@ -1,0 +1,909 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.bsb.com/soliam/mt/common/parametercode/ws/1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="ParameterCodeWebService" targetNamespace="http://www.bsb.com/soliam/mt/common/parametercode/ws/1">
+<wsdl:types>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.bsb.com/soliam/tech/ws/type/xml/1" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/tech/ws/type/xml/1" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+<!--
+ Some strong types to be used all over Soliam Tech and Soliam MT 
+-->
+<xs:simpleType name="nonEmptyString">
+<xs:annotation>
+<xs:documentation>
+A String containing at least one non-blank character, without leading or trailing whitespaces, where only the standard whitespace is allowed (no tab, carriage returns, ...)
+</xs:documentation>
+</xs:annotation>
+<xs:restriction base="xs:string">
+<xs:pattern value="\S+( +\S+)*"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="trimmedText">
+<xs:annotation>
+<xs:documentation>
+A non empty text, without leading or trailing whitespaces (tabs and carriage returns are allowed)
+</xs:documentation>
+</xs:annotation>
+<xs:restriction base="xs:string">
+<xs:pattern value="\S+(\s+\S+)*"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="nonEmptyText">
+<xs:annotation>
+<xs:documentation>
+A text containing at least one non-blank character (tabs and carriage returns are allowed)
+</xs:documentation>
+</xs:annotation>
+<xs:restriction base="xs:string">
+<xs:pattern value="(\s*[^\s]\s*)+"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="fullString">
+<xs:annotation>
+<xs:documentation>
+A String that doesn't allow any whitespace character
+</xs:documentation>
+</xs:annotation>
+<xs:restriction base="xs:string">
+<xs:pattern value="\S+"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="trigram">
+<xs:annotation>
+<xs:documentation>
+An uppercase 3-character String that doesn't allow any whitespace nor special character
+</xs:documentation>
+</xs:annotation>
+<xs:restriction base="xs:string">
+<xs:pattern value="[A-Z0-9]{3}"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.bsb.com/soliam/tech/finder/paging/xml/1" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/tech/finder/paging/xml/1" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+<xs:annotation>
+<xs:documentation>Provides metadata for pagination</xs:documentation>
+</xs:annotation>
+<xs:complexType name="PageRequest">
+<xs:annotation>
+<xs:documentation>Defines the criteria used in a paging request</xs:documentation>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="PageNumber" type="xs:int">
+<xs:annotation>
+<xs:documentation>
+The index of the requested/returned page (starting from 0)
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element name="PageSize" type="xs:int">
+<xs:annotation>
+<xs:documentation>
+The size of the requested page, this doesn't necessary match the number of elements in the returned page.
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="Sort" type="Sort">
+<xs:annotation>
+<xs:documentation>The information about the sorts</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="CountTotalNumberOfItems" type="xs:boolean">
+<xs:annotation>
+<xs:documentation>
+Flag to indicate if the total number of items must be computed when fetching the page items. Counting the total number of items might have a performance impact if many items match the Finder criteria. If 'CountTotalNumberOfItems' is not set, the 'PageMetadata' elements 'PageCount' and 'TotalElementCount' might not be returned.
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="PageMetadata">
+<xs:annotation>
+<xs:documentation>
+Defines all the data associated to the returned page
+</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="PageRequest">
+<xs:sequence>
+<xs:element name="FirstPage" type="xs:boolean">
+<xs:annotation>
+<xs:documentation>
+Flag to indicate if the current page is the first page
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element name="LastPage" type="xs:boolean">
+<xs:annotation>
+<xs:documentation>
+Flag to indicate if the current page is the last page
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element name="NextPage" type="xs:boolean">
+<xs:annotation>
+<xs:documentation>Flag to indicate if there is a next page</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element name="PreviousPage" type="xs:boolean">
+<xs:annotation>
+<xs:documentation>Flag to indicate if there is a previous page</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="PageCount" type="xs:int">
+<xs:annotation>
+<xs:documentation>The total number of pages, if available.</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element name="PageElementCount" type="xs:int">
+<xs:annotation>
+<xs:documentation>
+The exact number of elements in the current page. This can be different from PageSize, which is the number of requested elements
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="TotalElementCount" type="xs:long">
+<xs:annotation>
+<xs:documentation>
+The total number of elements (notwithstanding the pages), if available.
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="Sort">
+<xs:annotation>
+<xs:documentation>A list of Order</xs:documentation>
+</xs:annotation>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="1" name="Order" type="Order"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Order">
+<xs:annotation>
+<xs:documentation>An order definition on a property</xs:documentation>
+</xs:annotation>
+<xs:attribute name="criterionId" type="xs:token" use="required"/>
+<xs:attribute default="asc" name="direction" type="OrderDirection"/>
+</xs:complexType>
+<xs:simpleType name="OrderDirection">
+<xs:restriction base="xs:string">
+<xs:enumeration value="asc"/>
+<xs:enumeration value="desc"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.bsb.com/soliam/tech/ws/type/xml/1" xmlns:paging="http://www.bsb.com/soliam/tech/finder/paging/xml/1" xmlns="http://www.bsb.com/soliam/tech/finder/xml/1" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/tech/finder/xml/1" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+<xs:import namespace="http://www.bsb.com/soliam/tech/ws/type/xml/1"/>
+<xs:import namespace="http://www.bsb.com/soliam/tech/finder/paging/xml/1"/>
+<!--  only used for testing purposes  -->
+<xs:element name="FinderRoot" type="Finder"/>
+<xs:complexType name="Finder">
+<xs:sequence>
+<xs:element name="CriterionList" type="CriterionList"/>
+<xs:element name="PageRequest" type="paging:PageRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="CriterionList">
+<xs:annotation>
+<xs:documentation>A list of Criterions</xs:documentation>
+</xs:annotation>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="Criterion" type="Criterion"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Criterion">
+<xs:sequence>
+<xs:element name="Operator" type="Operator">
+<xs:annotation>
+<xs:documentation>The operator used in the comparison</xs:documentation>
+</xs:annotation>
+</xs:element>
+<xs:element minOccurs="0" name="Values" type="Values">
+<xs:annotation>
+<xs:documentation>
+The value(s) (constants) used in the comparison. Note that not all operators require a value (ISNULL for example doesn't need a value to be compared to)
+</xs:documentation>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+<xs:attribute name="id" type="xs:ID" use="required">
+<xs:annotation>
+<xs:documentation>
+The id of the the Search criterion. This is must match the id of a CriterionModel object (server-side)
+</xs:documentation>
+</xs:annotation>
+</xs:attribute>
+</xs:complexType>
+<xs:simpleType name="Operator">
+<xs:annotation>
+<xs:documentation>The operator used to express the criterion</xs:documentation>
+</xs:annotation>
+<xs:restriction base="xs:string">
+<xs:enumeration value="EQUALS"/>
+<xs:enumeration value="NOT_EQUALS"/>
+<xs:enumeration value="EQUALS_IGNORE_CASE"/>
+<xs:enumeration value="CONTAINS"/>
+<xs:enumeration value="BIGGER"/>
+<xs:enumeration value="BIGGER_OR_EQUALS"/>
+<xs:enumeration value="SMALLER"/>
+<xs:enumeration value="SMALLER_OR_EQUALS"/>
+<xs:enumeration value="BETWEEN"/>
+<xs:enumeration value="IS_EMPTY"/>
+<xs:enumeration value="IS_NOT_EMPTY"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:complexType abstract="true" name="Values"/>
+<xs:complexType name="StringValues">
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="StringValue" type="st:nonEmptyString"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="LocalDateValues">
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="LocalDateValue" type="xs:date"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="DateTimeValues">
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="DateTimeValue" type="xs:dateTime"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="BooleanValues">
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element name="BooleanValue" type="xs:boolean"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="DecimalValues">
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="DecimalValue" type="xs:decimal"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="IntegerValues">
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="IntegerValue" type="xs:long"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="EnumValues">
+<xs:annotation>
+<xs:documentation>
+String values that are meant to be mapped to an enumeration, for example a paramameter code.
+</xs:documentation>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="Values">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="EnumValue" type="st:nonEmptyString"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xsd:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.bsb.com/soliam/tech/ws/type/xml/1" xmlns="http://www.bsb.com/soliam/mt/common/xml/1" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/mt/common/xml/1" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+<xsd:import namespace="http://www.bsb.com/soliam/tech/ws/type/xml/1"/>
+<xsd:import namespace="http://www.bsb.com/soliam/tech/finder/xml/1"/>
+<xsd:annotation>
+<xsd:documentation>
+Provide common strong types such as Wording (internationalized string), Locale, Time, Money and Business concepts.
+</xsd:documentation>
+</xsd:annotation>
+<!--  Internationalization  -->
+<xsd:simpleType name="Locale">
+<xsd:annotation>
+<xsd:documentation>
+The Locale, defined as lowercase language (ISO-639) and an optional uppercase country (ISO-3166)
+</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:pattern value="[a-z]{2}(_[A-Z]{2})?"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:complexType name="Wording">
+<xsd:annotation>
+<xsd:documentation>
+A Wording is an i18n string, i.e. a string with translations. There is a difference of handling a wording in a read-only mode and a read-write mode. The first one only requires one translation (usually for the current Locale). The other requires all the translation on the wire.
+</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="1" name="Label" type="I18nString">
+<xsd:annotation>
+<xsd:documentation>Localised labels for the code</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="I18nString">
+<xsd:simpleContent>
+<xsd:restriction base="I18nStringInternal">
+<xsd:whiteSpace value="preserve"/>
+</xsd:restriction>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="I18nStringInternal">
+<xsd:annotation>
+<xsd:documentation>
+An internationalized description in several locales (languages)
+</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="xsd:string">
+<xsd:attribute name="locale" type="Locale" use="required"/>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<!--  Time Concepts  -->
+<!--
+ TODO JODA-Time
+		DateTime, DateMidnight, LocalDate, LocalTime, LocalDateTime, Duration, Period and Interval
+	
+-->
+<!--  Money & Business Concepts  -->
+<xsd:simpleType name="ManagementEntity">
+<xsd:restriction base="st:trigram"/>
+</xsd:simpleType>
+<xsd:simpleType name="Comment">
+<xsd:annotation>
+<xsd:documentation>A comment (limited to 2000 characters)</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:minLength value="0"/>
+<xsd:maxLength value="2000"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:complexType name="AmountWithDate">
+<xsd:annotation>
+<xsd:documentation>Amount at a specific date</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="Amount">
+<xsd:attribute name="date" type="xsd:date" use="required">
+<xsd:annotation>
+<xsd:documentation>Date of the amount</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="Amount">
+<xsd:annotation>
+<xsd:documentation>Amount value</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="xsd:decimal">
+<xsd:attribute name="currencyId" type="st:nonEmptyString" use="required">
+<xsd:annotation>
+<xsd:documentation>Currency of the amount</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="Quantity">
+<xsd:annotation>
+<xsd:documentation>Quantity of an order, a position, ...</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="xsd:decimal"/>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="QuantityWithDate">
+<xsd:annotation>
+<xsd:documentation>Dated quantity</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="Quantity">
+<xsd:attribute name="date" type="xsd:date" use="required">
+<xsd:annotation>
+<xsd:documentation>Date of the quantity</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="NominalQuantity">
+<xsd:annotation>
+<xsd:documentation>Nominal quantity</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="Quantity">
+<xsd:attribute name="currencyId" type="st:nonEmptyString" use="required">
+<xsd:annotation>
+<xsd:documentation>Currency of the quantity</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="NominalQuantityWithDate">
+<xsd:annotation>
+<xsd:documentation>Dated nominal quantity</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="NominalQuantity">
+<xsd:attribute name="date" type="xsd:date" use="required">
+<xsd:annotation>
+<xsd:documentation>Date of the quantity</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType abstract="true" name="Price">
+<xsd:simpleContent>
+<xsd:extension base="xsd:decimal"/>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="PriceInCurrency">
+<xsd:annotation>
+<xsd:documentation>
+Price value used for the securities with Quotation mode "In currency"
+</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="Price">
+<xsd:attribute name="currencyId" type="st:nonEmptyString" use="required">
+<xsd:annotation>
+<xsd:documentation>Currency of the price</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="PriceInPercentage">
+<xsd:annotation>
+<xsd:documentation>
+Price value used for the securities with Quotation mode "In percentage"
+</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="Price"/>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="PercentageWithDate">
+<xsd:annotation>
+<xsd:documentation>Dated percentage.</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="Percentage">
+<xsd:attribute name="date" type="xsd:date" use="required">
+<xsd:annotation>
+<xsd:documentation>Date of the percentage.</xsd:documentation>
+</xsd:annotation>
+</xsd:attribute>
+</xsd:extension>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:simpleType name="Percentage">
+<xsd:annotation>
+<xsd:documentation>Percentage or ratio (%)</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:decimal"/>
+</xsd:simpleType>
+<xsd:simpleType name="QuotationMode">
+<xsd:annotation>
+<xsd:documentation>Type of the price</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="AMOUNT"/>
+<xsd:enumeration value="PERCENTAGE"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="CurrencyType">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="ACCOUNTING"/>
+<xsd:enumeration value="REFERENCE"/>
+<xsd:enumeration value="ASSET"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="QuantityType">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="HELD"/>
+<xsd:enumeration value="AVAILABLE_WITH_BLOCKED"/>
+<xsd:enumeration value="AVAILABLE_NON_BLOCKED"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="ValuationType">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="CLEAN"/>
+<xsd:enumeration value="DIRTY"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="IBAN">
+<xsd:annotation>
+<xsd:documentation>International Bank Account Number</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="st:nonEmptyString">
+<xsd:minLength value="15"/>
+<xsd:maxLength value="34"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:simpleType name="BIC">
+<xsd:annotation>
+<xsd:documentation>
+Business Identifier Codes: It is a unique identification code for both financial and non-financial institutions.
+</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="st:nonEmptyString">
+<xsd:minLength value="8"/>
+<xsd:maxLength value="11"/>
+</xsd:restriction>
+</xsd:simpleType>
+<xsd:complexType name="DateInterval">
+<xsd:annotation>
+<xsd:documentation>
+Date interval represented by two dates : start date and end date
+</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="StartDate" type="xsd:date"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="EndDate" type="xsd:date"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="Frequency">
+<xsd:annotation>
+<xsd:documentation>
+Frequency represented by a step and a unit (day, month or year)
+</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="Step" type="xsd:integer"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="Unit" type="FrequencyUnit"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:simpleType name="FrequencyUnit">
+<xsd:annotation>
+<xsd:documentation>Unit of the frequency step</xsd:documentation>
+</xsd:annotation>
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="DAY"/>
+<xsd:enumeration value="MONTH"/>
+<xsd:enumeration value="YEAR"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>
+<xsd:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.bsb.com/soliam/tech/ws/type/xml/1" xmlns:common="http://www.bsb.com/soliam/mt/common/xml/1" xmlns="http://www.bsb.com/soliam/mt/common/parametercode/xml/1" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/mt/common/parametercode/xml/1" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+<xsd:import namespace="http://www.bsb.com/soliam/mt/common/xml/1"/>
+<xsd:import namespace="http://www.bsb.com/soliam/tech/ws/type/xml/1"/>
+<xsd:annotation>
+<xsd:documentation>Provide Parameter code concepts.</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleType name="Eligibility">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="ELIGIBLE"/>
+<xsd:enumeration value="NOT_ELIGIBLE"/>
+</xsd:restriction>
+</xsd:simpleType>
+<!--  Generic parameter code  -->
+<xsd:complexType name="ParameterCodeId">
+<xsd:annotation>
+<xsd:documentation>Define an external code of the parameter code</xsd:documentation>
+</xsd:annotation>
+<xsd:simpleContent>
+<xsd:extension base="st:nonEmptyString"/>
+</xsd:simpleContent>
+</xsd:complexType>
+<xsd:complexType name="ParameterCode">
+<xsd:annotation>
+<xsd:documentation>
+Define a parameter code with its external code and labels
+</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="ExternalCode" type="ParameterCodeId">
+<xsd:annotation>
+<xsd:documentation>External code of the parameter code</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="1" name="Labels" type="common:Wording">
+<xsd:annotation>
+<xsd:documentation>
+Labels of the parameter code in a specific language
+</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+<!--
+ only used to provide examples, please use the complexType in definitions 
+-->
+<xsd:element name="ParameterCode" type="ParameterCode"/>
+<!--
+ Parameter codes with extra properties, please keep them sorted alphabetically 
+-->
+<xsd:complexType name="CatalogType">
+<xsd:annotation>
+<xsd:documentation>
+Define a type list parameter code with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="ClassId" type="ParameterCode">
+<xsd:annotation>
+<xsd:documentation>The class parameter code of the catalog type.</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="1" name="CustomType" type="xsd:boolean">
+<xsd:annotation>
+<xsd:documentation>Flag to indicate if there is custom type.</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="SegregationEntity" type="common:ManagementEntity">
+<xsd:annotation>
+<xsd:documentation>Management entity used for the segregation.</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="Currency">
+<xsd:annotation>
+<xsd:documentation>
+Define a currency parameter code with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="NumberOfDecimalPlaces" type="xsd:nonNegativeInteger">
+<xsd:annotation>
+<xsd:documentation>Number of decimal places</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="InvestmentType">
+<xsd:annotation>
+<xsd:documentation>Define the investment type.</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="Interfacing" type="xsd:boolean">
+<xsd:annotation>
+<xsd:documentation>Flag for interfacing indicator.</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="ClassInvestmentType" type="ParameterCode">
+<xsd:annotation>
+<xsd:documentation>The class investment type parameter code.</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="EligibilityPea" type="Eligibility">
+<xsd:annotation>
+<xsd:documentation>
+Indicates if the investment type is PEA (Plan d'épargne en actions) eligible
+</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="EligibilityPeaPme" type="Eligibility">
+<xsd:annotation>
+<xsd:documentation>
+Indicates if the investment type is PEA/PME (Plan d'épargne en actions, petite et moyennes entreprises) eligible
+</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="MessageChannel">
+<xsd:annotation>
+<xsd:documentation>
+Define the message channel parameter code with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="UsedForRecommendation" type="xsd:boolean">
+<xsd:annotation>
+<xsd:documentation>
+Flag to indicate if the channel is used for recommendation.
+</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="1" name="UsedForMessaging" type="xsd:boolean">
+<xsd:annotation>
+<xsd:documentation>
+Flag to indicate if the channel is used for messaging.
+</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="OrderValidityPeriod">
+<xsd:annotation>
+<xsd:documentation>
+Define a validity period parameter code with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="MandatoryExpiryDate" type="xsd:boolean">
+<xsd:annotation>
+<xsd:documentation>Flag to indicate if expiry date is mandatory</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="RecommendationDocumentPattern">
+<xsd:annotation>
+<xsd:documentation>
+Define a recommendation document pattern with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="PresentationOrderNumber" type="xsd:nonNegativeInteger">
+<xsd:annotation>
+<xsd:documentation>Presentation order number</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="MultilingualContent" type="common:Wording">
+<xsd:annotation>
+<xsd:documentation>
+The recommendation document pattern multilingual content
+</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="RoleType">
+<xsd:annotation>
+<xsd:documentation>Defines a role type and its nature.</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="Manager" type="xsd:boolean"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="Crm" type="xsd:boolean"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="Holder" type="xsd:boolean"/>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="QuotationPlace">
+<xsd:annotation>
+<xsd:documentation>
+Define a quotation place parameter code with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="0" name="DisplayOrder" type="xsd:int">
+<xsd:annotation>
+<xsd:documentation>Presentation order number</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name="SecuritySubType">
+<xsd:annotation>
+<xsd:documentation>
+Define a security sub-type parameter code with its specific data
+</xsd:documentation>
+</xsd:annotation>
+<xsd:complexContent>
+<xsd:extension base="ParameterCode">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="0" name="DisplayOrder" type="xsd:int">
+<xsd:annotation>
+<xsd:documentation>Presentation order number</xsd:documentation>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+</xsd:schema>
+<xsd:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:st="http://www.bsb.com/soliam/tech/ws/type/xml/1" xmlns:model="http://www.bsb.com/soliam/mt/common/parametercode/xml/1" xmlns="http://www.bsb.com/soliam/mt/common/parametercode/ws/1" elementFormDefault="qualified" targetNamespace="http://www.bsb.com/soliam/mt/common/parametercode/ws/1" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+<xsd:import namespace="http://www.bsb.com/soliam/tech/ws/type/xml/1"/>
+<xsd:import namespace="http://www.bsb.com/soliam/mt/common/parametercode/xml/1"/>
+<xsd:element name="GetAllParameterCodeValuesRequest">
+<xsd:complexType>
+<xsd:annotation>
+<xsd:documentation>A list of parameter code key</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="1" name="ParameterCodeKey" type="st:nonEmptyString"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:element name="GetAllParameterCodeValuesResponse">
+<xsd:complexType>
+<xsd:annotation>
+<xsd:documentation>
+A list of parameter code domains containing parameter code key with their values (external codes and labels)
+</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="ParameterCodeDomain" type="ParameterCodeDomain"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+<xsd:complexType name="ParameterCodeDomain">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="1" name="ParameterCodeKey" type="st:nonEmptyString"/>
+<xsd:element maxOccurs="1" minOccurs="1" name="ParameterCodeValues" type="ParameterCodeValues"/>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="ParameterCodeValues">
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="ParameterCodeValue" type="model:ParameterCode"/>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
+</wsdl:types>
+<wsdl:message name="GetAllParameterCodeValuesResponse">
+<wsdl:part element="tns:GetAllParameterCodeValuesResponse" name="GetAllParameterCodeValuesResponse"></wsdl:part>
+</wsdl:message>
+<wsdl:message name="GetAllParameterCodeValues">
+<wsdl:part element="tns:GetAllParameterCodeValuesRequest" name="GetAllParameterCodeValues"></wsdl:part>
+</wsdl:message>
+<wsdl:portType name="ParameterCodeWebService">
+<wsdl:documentation>
+Web service that gives access to parameter codes concept
+</wsdl:documentation>
+<wsdl:operation name="GetAllParameterCodeValues">
+<wsdl:documentation>
+This operation allows to get all parameter code values with their labels (for each supported languages). It takes a list of parameter code key as input.
+</wsdl:documentation>
+<wsdl:input message="tns:GetAllParameterCodeValues" name="GetAllParameterCodeValues"></wsdl:input>
+<wsdl:output message="tns:GetAllParameterCodeValuesResponse" name="GetAllParameterCodeValuesResponse"></wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="ParameterCodeWebServiceSoapBinding" type="tns:ParameterCodeWebService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="GetAllParameterCodeValues">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="GetAllParameterCodeValues">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="GetAllParameterCodeValuesResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="ParameterCodeWebService">
+<wsdl:port binding="tns:ParameterCodeWebServiceSoapBinding" name="ParameterCodeWebServicePort">
+<soap:address location="http://tun40.bsbcorp.bsb.com:55080/tms/services/public/ParameterCodeWebService"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>
